@@ -1,0 +1,825 @@
+tags:
+  - name: carts
+    description: Endpoints relacionados con carritos de compra
+  - name: products
+    description: Endpoints relacionados con productos
+  - name: users
+    description: Endpoints relacionados con usuarios
+  - name: tickets
+    description: Endpoints relacionados con tickets
+
+paths:
+  /carts:
+    get:
+      summary: Obtiene todos los carritos
+      tags: 
+        - carts
+      responses:
+        '200':
+          description: Lista de carritos obtenida con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts/CartListSuccess'
+        '401':
+          description: No se proporcionó un token de autenticación válido.
+        '404':
+          description: Carritos no encontrados/disponibles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts/CartNotFound'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    post:
+      summary: Crea un nuevo carrito.
+      tags: 
+        - carts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Carts/BodyNewCart'
+      responses:
+        '201':
+          description: Carrito creado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts/CartCreated'
+        '400':
+          description: Error en la carga de datos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /carts/{id}:
+    get:
+      summary: Obtiene un carrito por ID.
+      tags:
+        - carts
+      parameters:
+        - name: id
+          in: path
+          description: ID del carrito
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Se encontró el carrito con éxito.
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts/CartSuccess'
+        '401':
+          description: No se proporcionó un token de autenticación válido.
+        '404':
+          description: Carrito no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts/CartNotFound'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+            schema:
+              $ref: '#/components/schemas/InternalServerError'
+    put:
+      summary: Actualiza un carrito por su ID
+      tags:
+        - carts
+      parameters:
+        - name: id
+          in: path 
+          description: ID del carrito a actualizar
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Carts/BodyUpdateCart'
+        required: true
+      responses:
+        '200':
+          description: Producto actualizado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts/CartUpdated'
+        '401':
+          description: No se proporcionó un token de autenticación válido.
+        '400':
+          description: Error en la carga de datos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts/CartNotFound'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'    
+    delete:
+      summary: Elimina un carrito filtrando por su ID.
+      tags:
+        - carts
+      parameters:
+        - name: id
+          in: path 
+          description: ID del carrito a eliminar
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Carrito eliminado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts/CartDeleted'
+        '401':
+          description: No se proporcionó un token de autenticación válido.
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts/CartNotFound'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /carts/{idCart}/products/{idProd}:
+    post:
+      summary: Agrega un producto a un carrito por ID.
+      tags: 
+        - carts
+      parameters:
+        - name: idCart
+          in: path
+          description: ID del carrito
+          required: true
+          schema:
+            type: string
+        - name: idProd
+          in: path
+          description: ID del producto
+          required: true
+          schema: 
+            type: string
+      responses:
+        '200':
+          description: Producto agregado al carrito con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts/ProductAddedToCartSuccess'
+        '401':
+          description: No se proporcionó un token de autenticación válido.
+        '404':
+          description: Carrito o producto no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts/CartOrProductNotFound'
+        '500':
+          description: Error interno del servidor
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
+    delete:
+      summary: Elimina un producto de un carrito específico.
+      tags:
+        - carts
+      parameters:
+        - name: idCart
+          in: path
+          description: ID del carrito
+          required: true
+          schema:
+            type: string
+        - name: idProd
+          in: path
+          description: ID del producto
+          required: true
+          schema: 
+            type: string
+      responses:
+        '200':
+          description: Producto eliminado del carrito con éxito
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts/ProductRemovedFromCartSuccess'
+        '401':
+          description: No se proporcionó un token de autenticación válido.        
+        '404':
+          description: Carrito o producto no encontrado
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts/CartOrProductNotFound'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /carts/clear/{idCart}:
+    delete:
+      summary: Vacía un carrito
+      tags:
+        - carts
+      parameters:
+        - name: idCart
+          in: path
+          description: ID del carrito
+          required: true
+          schema: 
+            type: string
+      responses:
+        '200':
+          description: Carrito vaciado con éxito
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts/CartClearSuccess'
+        '401':
+          description: No se proporcionó un token de autenticación válido.
+        '404':
+          description: Carrito no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts/CartNotFound'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /products:
+    get:
+      summary: Obtiene todos los productos
+      tags:
+        - products
+      responses:
+        '200':
+          description: Lista de productos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Products/ProductListSuccess'
+        '404':
+          description: Productos no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Products/ProductNotFound'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    post:
+      summary: Crea un nuevo producto.
+      tags:
+        - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Products/BodyNewProduct'
+        required: true
+      responses:
+        '201':
+          description: Producto creado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Products/ProductCreated'
+        '400':
+          description: Error en la carga de datos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: No se proporcionó un token de autenticación válido.
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /products/{id}:
+    get:
+      summary: Obtiene un producto por su ID.
+      tags:
+        - products
+      parameters:
+        - name: id
+          in: path
+          description: ID del producto
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Se encontró el producto con éxito.
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Products/ProductSuccess'
+        '404':
+          description: Producto no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Products/ProductNotFound'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+            schema:
+              $ref: '#/components/schemas/InternalServerError'
+    put:
+      summary: Actualiza un producto por su ID
+      tags: 
+        - products
+      parameters:
+        - name: id
+          in: path 
+          description: ID del producto a actualizar
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Products/NewProduct'
+        required: true
+      responses:
+        '200':
+          description: Producto actualizado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Products/ProductUpdated'
+        '400':
+          description: Error en la carga de datos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: No se proporcionó un token de autenticación válido.
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Products/ProductNotFound'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'    
+    delete:
+      summary: Elimina un producto por su ID.
+      tags:
+        - products
+      parameters:
+        - name: id
+          in: path 
+          description: ID del producto a eliminar
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Producto eliminado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Products/ProductDeleted'
+        '401':
+          description: No se proporcionó un token de autenticación válido.
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Products/ProductNotFound'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /users:
+    get:
+      summary: Obtiene todos los usuarios registrados en el sistema
+      tags:
+        - users
+      responses:
+        '200':
+          description: Lista de usuarios obtenida con éxito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    first_name:
+                      type: string
+                      description: Nombre del usuario
+                    last_name:
+                      type: string
+                      description: Apellido del usuario
+                    email:
+                      type: string
+                      description: Correo electrónico del usuario
+                    role:
+                      type: string
+                      description: Rol del usuario (por ejemplo, "user" o "premium")
+          '401':
+            description: No se proporcionó un token de autenticación válido.
+    delete:
+      summary: Elimina a todos los usuarios que no han tenido conexión en los últimos 2 días
+      tags:
+        - users
+      responses:
+        '200':
+          description: Usuarios inactivos eliminados con éxito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    first_name:
+                      type: string
+                      description: Nombre del usuario eliminado
+                    last_name:
+                      type: string
+                      description: Apellido del usuario eliminado
+                    email:
+                      type: string
+                      description: Correo electrónico del usuario eliminado
+                    role:
+                      type: string
+                      description: Rol del usuario eliminado
+          # Nota: Se enviará un correo electrónico a cada usuario notificando la eliminación de su cuenta por inactividad
+        '401':
+          description: No se proporcionó un token de autenticación válido.
+
+  /users/register:
+    post:
+      summary: Registrar un nuevo usuario
+      description: Endpoint para que los usuarios se registren en el sistema.
+      tags:
+        - users
+      requestBody:
+        description: Datos del usuario a registrar
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Users/UserRegistrationData'
+      responses:
+        '200':
+          description: Usuario registrado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users/UserRegistrationResponse'
+        '400':
+          description: Error en la carga de datos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /users/login:
+    post:
+      summary: Iniciar sesión
+      description: Endpoint para que los usuarios inicien sesión en el sistema.
+      tags:
+        - users
+      requestBody:
+        description: Credenciales de inicio de sesión
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Users/LoginCredentials'
+      responses:
+        '200':
+          description: Usuario autenticado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users/LoginResponse'
+        '401':
+          description: Credenciales inválidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /users/profile:
+    get:
+      summary: Obtener perfil de usuario
+      description: Endpoint para obtener el perfil del usuario autenticado.
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Perfil del usuario obtenido exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users/UserProfile'
+        '401':
+          description: No autorizado, token inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /users/reset-pass:
+    post:
+      summary: Restablecer contraseña
+      description: Endpoint para que los usuarios restablezcan su contraseña.
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Email del usuario para restablecer la contraseña
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Users/ResetPasswordRequest'
+      responses:
+        '200':
+          description: Solicitud de restablecimiento de contraseña enviada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users/ResetPasswordResponse'
+        '400':
+          description: Error en la carga de datos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: No autorizado, token inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /users/new-password:
+    put:
+      summary: Actualizar contraseña
+      description: Endpoint para que los usuarios actualicen su contraseña.
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Nueva contraseña del usuario
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Users/NewPasswordRequest'
+      responses:
+        '200':
+          description: Contraseña actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users/NewPasswordResponse'
+        '400':
+          description: Error en la carga de datos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: No autorizado, token inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /users/premium/{uid}:
+    post:
+      summary: Actualizar a usuario premium
+      description: Endpoint para actualizar el estado de un usuario a premium.
+      tags:
+        - users
+      parameters:
+        - name: uid
+          in: path
+          description: ID del usuario a actualizar
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Usuario actualizado a premium exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users/UserPremiumUpdateResponse'
+        '400':
+          description: Error en la carga de datos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: No autorizado, token inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users/UserNotFound'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /users/{uid}/documents:
+    post:
+      summary: Subir documentos de usuario
+      description: Endpoint para que los usuarios suban documentos.
+      tags:
+        - users
+      parameters:
+        - name: uid
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Documentos a subir
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Users/UserDocumentUploadRequest'
+      responses:
+        '200':
+          description: Documentos subidos exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users/UserDocumentUploadResponse'
+        '400':
+          description: Error en la carga de datos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: No autorizado, token inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users/UserNotFound'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /tickets/cart/{cartId}:
+    post:
+      summary: Generar ticket de compra
+      description: Endpoint para generar un ticket de compra basado en el carrito especificado.
+      tags:
+        - tickets
+      parameters:
+        - name: cartId
+          in: path
+          description: ID del carrito asociado al ticket
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Ticket de compra generado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tickets/TicketGenerationResponse'
+        '401':
+          description: No autorizado, token inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Carrito no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts/CartNotFound'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'

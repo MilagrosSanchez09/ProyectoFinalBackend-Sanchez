@@ -1,0 +1,712 @@
+components:
+  schemas:
+    InternalServerError:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error interno del servidor.
+
+    BadRequest:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error en la solicitud.
+
+    Unauthorized:
+      type: object
+      properties:
+        message:
+          type: string
+          description: No autorizado. Credenciales inválidas.
+
+    Carts:
+      Cart:
+        type: object
+        properties:
+          _id:
+            type: string
+            description: ID del carrito.
+          products:
+            type: array
+            items:
+              $ref: '#/components/schemas/Products/Product'
+      CartListSuccess:
+        type: object
+        properties:
+          carts:
+            type: array
+            items:
+              $ref: '#/components/schemas/Carts/Cart'
+      CartNotFound:
+        type: object
+        properties:
+          message:
+            type: string
+      CartSuccess:
+        type: object
+        properties:
+          _id:
+            type: string
+            description: ID del carrito.
+          products:
+            type: array
+            items:
+              $ref: '#/components/schemas/Products/Product'
+      CartCreated:
+        type: object
+        properties:
+          id:
+            type: string
+            description: ID del carrito creado.
+          products:
+            type: array
+            items:
+              type: object
+              properties:
+                productId:
+                  type: string
+                  description: ID del producto en el carrito.
+                quantity:
+                  type: integer
+                  description: Cantidad del producto en el carrito.
+        required:
+          - id
+          - products
+      CartUpdated:
+        type: object
+        properties:
+          _id:
+            type: string
+            description: ID del carrito.
+          products:
+            type: array
+            items:
+              $ref: '#/components/schemas/Products/Product'
+      CartDeleted:
+        type: object
+        properties:
+          message:
+            type: string
+      ProductAddedToCartSuccess:
+        type: object
+        properties:
+          message:
+            type: string
+      ProductRemovedFromCartSuccess:
+        type: object
+        properties:
+          message:
+            type: string
+      CartOrProductNotFound:
+        type: object
+        properties:
+          message:
+            type: string
+      BodyUpdateCart:
+        type: object
+        properties:
+          products:
+            type: array
+            items:
+              type: object
+              properties:
+                productId:
+                  type: string
+                  description: ID del producto a actualizar en el carrito.
+                quantity:
+                  type: integer
+                  description: Nueva cantidad del producto en el carrito.
+        required:
+          - products
+      BodyNewCart:
+        type: object
+        properties:
+          userId:
+            type: string
+            description: ID del usuario al que pertenece el carrito.
+          products:
+            type: array
+            items:
+              type: object
+              properties:
+                productId:
+                  type: string
+                  description: ID del producto a agregar al carrito.
+                quantity:
+                  type: integer
+                  description: Cantidad del producto a agregar al carrito.
+        required:
+          - userId
+          - products
+      CartClearSuccess:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Mensaje de éxito indicando que el carrito se ha vaciado correctamente.
+
+    Products:
+      Product:
+        type: object
+        properties:
+          id:
+            type: string
+            description: ID del producto.
+          name:
+            type: string
+            description: Nombre del producto.
+          description:
+            type: string
+            description: Descripción del producto.
+          price:
+            type: number
+            description: Precio del producto.
+          quantity:
+            type: integer
+            description: Cantidad disponible del producto en inventario.
+        required:
+          - id
+          - name
+          - price
+          - quantity
+      ProductListSuccess:
+        type: object
+        properties:
+          products:
+            type: array
+            items:
+              $ref: '#/components/schemas/Products/Product'
+      ProductNotFound:
+        type: object
+        properties:
+          message:
+            type: string
+      BodyNewProduct:
+        type: object
+        properties:
+          name:
+            type: string
+            description: Nombre del nuevo producto.
+          description:
+            type: string
+            description: Descripción del nuevo producto.
+          price:
+            type: number
+            description: Precio del nuevo producto.
+          quantity:
+            type: integer
+            description: Cantidad inicial del nuevo producto en inventario.
+        required:
+          - name
+          - price
+          - quantity
+      ProductCreated:
+        type: object
+        properties:
+          _id:
+            type: string
+            description: ID único del producto.
+          product_name:
+            type: string
+            description: Nombre del producto.
+          product_description:
+            type: string
+            description: Descripción del producto.
+          product_price:
+            type: number
+            description: Precio del producto.
+          product_stock:
+            type: integer
+            description: Stock disponible del producto.
+      ProductSuccess:
+        type: object
+        properties:
+          _id:
+            type: string
+            description: ID del producto.
+          product_name:
+            type: string
+            description: Nombre del producto.
+          product_description:
+            type: string
+            description: Descripción del producto.
+          product_price:
+            type: number
+            description: Precio del producto.
+          product_stock:
+            type: integer
+            description: Stock disponible del producto.
+      ProductUpdated:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Mensaje de éxito de actualización del producto.
+      ProductDeleted:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Mensaje de éxito de eliminación del producto.
+      NewProduct:
+        type: object
+        properties:
+          name:
+            type: string
+            description: Nombre del nuevo producto.
+          description:
+            type: string
+            description: Descripción del nuevo producto.
+          price:
+            type: number
+            description: Precio del nuevo producto.
+          quantity:
+            type: integer
+            description: Cantidad inicial del nuevo producto en inventario.
+        required:
+          - name
+          - price
+          - quantity
+
+    Document:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nombre del documento.
+          example: "Documento de identidad"
+          required: true
+        reference:
+          type: string
+          description: Referencia del documento.
+          example: "ABC123"
+          required: true
+
+    Users:
+      User:
+        type: object
+        properties:
+          first_name:
+            type: string
+            description: Nombre del usuario.
+            required: true
+          last_name:
+            type: string
+            description: Apellido del usuario.
+            required: true
+          email:
+            type: string
+            description: Correo electrónico del usuario.
+            required: true
+          age:
+            type: integer
+            description: Edad del usuario.
+          password:
+            type: string
+            description: Contraseña del usuario.
+          role:
+            type: string
+            description: Rol del usuario.
+            enum:
+              - user
+              - premium
+              - admin
+            default: user
+          isGithub:
+            type: boolean
+            description: Indica si el usuario se registró utilizando GitHub.
+          isGoogle:
+            type: boolean
+            description: Indica si el usuario se registró utilizando Google.
+          resetPasswordToken:
+            type: string
+            description: Token para restablecer la contraseña del usuario.
+          resetPasswordExpires:
+            type: string
+            format: date-time
+            description: Vencimiento del token para restablecer la contraseña.
+          documents:
+            type: array
+            description: Documentos asociados al usuario.
+            items:
+              $ref: '#/components/schemas/Document'
+          last_connection:
+            type: string
+            format: date-time
+            description: Última conexión del usuario.
+      UserListSuccess:
+        type: array
+        items:
+          $ref: '#/components/schemas/Users/User'
+      UserDeletedSuccess:
+        type: array
+        items:
+          $ref: '#/components/schemas/Users/User'
+      UserRegistrationData:
+        type: object
+        properties:
+          first_name:
+            type: string
+            description: Nombre del usuario.
+          last_name:
+            type: string
+            description: Apellido del usuario.
+          email:
+            type: string
+            description: Correo electrónico del usuario.
+          age:
+            type: integer
+            description: Edad del usuario.
+          password:
+            type: string
+            description: Contraseña del usuario.
+        required:
+          - first_name
+          - last_name
+          - email
+          - password
+      UserRegistrationResponse:
+        type: object
+        properties:
+          _id:
+            type: string
+            description: ID del usuario registrado.
+          first_name:
+            type: string
+            description: Nombre del usuario.
+          last_name:
+            type: string
+            description: Apellido del usuario.
+          email:
+            type: string
+            description: Correo electrónico del usuario.
+          age:
+            type: integer
+            description: Edad del usuario.
+          role:
+            type: string
+            description: Rol del usuario (por ejemplo, "user" o "premium").
+      LoginCredentials:
+        type: object
+        properties:
+          email:
+            type: string
+            description: Correo electrónico del usuario.
+          password:
+            type: string
+            description: Contraseña del usuario.
+        required:
+          - email
+          - password
+      LoginResponse:
+        type: object
+        properties:
+          token:
+            type: string
+            description: Token de acceso generado para el usuario autenticado.
+      UserProfile:
+        type: object
+        properties:
+          first_name:
+            type: string
+            description: Nombre del usuario.
+          last_name:
+            type: string
+            description: Apellido del usuario.
+          email:
+            type: string
+            description: Correo electrónico del usuario.
+          age:
+            type: integer
+            description: Edad del usuario.
+          role:
+            type: string
+            description: Rol del usuario (por ejemplo, "user", "premium" o "admin").
+        required:
+          - first_name
+          - email
+          - role
+      ResetPasswordRequest:
+        type: object
+        properties:
+          email:
+            type: string
+            description: Correo electrónico del usuario para restablecer la contraseña.
+        required:
+          - email
+      ResetPasswordResponse:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Mensaje de éxito indicando que la solicitud de restablecimiento de contraseña ha sido enviada correctamente.
+        required:
+          - message
+      NewPasswordRequest:
+        type: object
+        properties:
+          password:
+            type: string
+            description: Nueva contraseña del usuario.
+        required:
+          - password
+      NewPasswordResponse:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Mensaje de éxito indicando que la contraseña ha sido actualizada correctamente.
+        required:
+          - message
+      UserPremiumUpdateResponse:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Mensaje de éxito indicando que el usuario ha sido actualizado a premium.
+        required:
+          - message
+      UserNotFound:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Mensaje indicando que el usuario no ha sido encontrado.
+        required:
+          - message
+      UserDocumentUploadRequest:
+        type: object
+        properties:
+          documents:
+            type: array
+            items:
+              $ref: '#/components/schemas/Document'
+        required:
+          - documents
+      UserDocumentUploadResponse:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Mensaje de éxito indicando que los documentos han sido subidos.
+        required:
+          - message
+    Tickets:
+      TicketGenerationResponse:
+        type: object
+        properties:
+          ticket_id:
+            type: string
+            description: ID del ticket de compra generado.
+          total_amount:
+            type: number
+            description: Monto total de la compra.
+          timestamp:
+            type: string
+            format: date-time
+            description: Marca de tiempo de la generación del ticket.
+        required:
+          - ticket_id
+          - total_amount
+          - timestamp
+
+paths:
+  /users:
+    get:
+      '200':
+        description: Lista de usuarios obtenida correctamente
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Users/User'
+      '401':
+        description: No autorizado, token de acceso no válido
+    delete:
+      '200':
+        description: Usuarios inactivos eliminados correctamente
+      '401':
+        description: No autorizado, token de acceso no válido
+  /users/register:
+    post:
+      '200':
+        description: Usuario registrado correctamente
+        content:
+          application/json:
+            example:
+              _id: string
+              first_name: string
+              last_name: string
+              email: string
+              age: number
+              role: string
+      '403':
+        description: No se pudo registrar el usuario
+        content:
+          application/json:
+            example:
+              message: string
+              error: string
+  /users/login:
+    post:
+      '200':
+        description: Usuario autenticado correctamente
+        content:
+          application/json:
+            example:
+              token: string
+      '401':
+        description: Credenciales de inicio de sesión no válidas
+        content:
+          application/json:
+            example:
+              message: string
+              error: string
+  /users/profile:
+    get:
+      '200':
+        description: Perfil de usuario obtenido correctamente
+        content:
+          application/json:
+            example:
+              first_name: string
+              last_name: string
+              email: string
+              age: number
+              role: string
+      '401':
+        description: No autorizado, token de acceso no válido
+  /users/reset-pass:
+    post:
+      '200':
+        description: Solicitud de restablecimiento de contraseña generada correctamente
+        content:
+          application/json:
+            example:
+              message: string
+      '404':
+        description: Usuario no encontrado para la solicitud de restablecimiento de contraseña
+        content:
+          application/json:
+            example:
+              message: string
+  /users/new-password:
+    put:
+      '200':
+        description: Contraseña actualizada correctamente
+        content:
+          application/json:
+            example:
+              _id: string
+              first_name: string
+              last_name: string
+              email: string
+              age: number
+              role: string
+      '403':
+        description: Error al actualizar la contraseña
+        content:
+          application/json:
+            example:
+              message: string
+              error: string
+  /users/premium/{uid}:
+    post:
+      '200':
+        description: Usuario actualizado a premium correctamente
+        content:
+          application/json:
+            example:
+              _id: string
+              first_name: string
+              last_name: string
+              email: string
+              age: number
+              role: string
+      '404':
+        description: Usuario no encontrado para actualizar a premium
+        content:
+          application/json:
+            example:
+              message: string
+  /users/{uid}/documents:
+    post:
+      '200':
+        description: Documentos subidos con éxito para el usuario
+        content:
+          application/json:
+            example:
+              _id: string
+              first_name: string
+              last_name: string
+              email: string
+              age: number
+              role: string
+              documents:
+                - name: string
+                  reference: string
+      '404':
+        description: Usuario no encontrado para subir documentos
+        content:
+          application/json:
+            example:
+              message: string
+  /tickets/cart/{cartId}:
+    post:
+      summary: Respuesta después de generar un ticket.
+      parameters:
+        - in: path
+          name: cartId
+          description: ID del carrito de compras del cual se generó el ticket.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ticket generado con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: ID único del ticket generado.
+                  code:
+                    type: string
+                    description: Código único del ticket.
+                  purchase_datetime:
+                    type: string
+                    description: Fecha y hora de la compra.
+                  amount:
+                    type: number
+                    description: Monto total de la compra.
+                  purchaser:
+                    type: string
+                    description: Correo electrónico del comprador.
+                  products:
+                    type: array
+                    description: Lista de productos comprados.
+                    items:
+                      type: object
+                      properties:
+                        product:
+                          type: string
+                          description: Nombre del producto comprado.
+                        quantity:
+                          type: integer
+                          description: Cantidad comprada del producto.
+                        price:
+                          type: number
+                          description: Precio unitario del producto.
+        '400':
+          description: Error en la solicitud.
+        '401':
+          description: No autorizado, token inválido.
+        '404':
+          description: Carrito de compras no encontrado.
+        '500':
+          description: Error interno del servidor.

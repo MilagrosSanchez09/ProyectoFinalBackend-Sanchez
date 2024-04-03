@@ -1,0 +1,500 @@
+/carts/{id}:
+    delete:
+      summary: Eliminar un carrito
+      description: Elimina un carrito existente mediante su ID.
+      parameters:
+        - in: path
+          name: id
+          description: ID del carrito a eliminar.
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Carrito eliminado exitosamente.
+        404:
+          description: Carrito no encontrado.
+        500:
+          description: Error interno del servidor al eliminar el carrito.
+
+/carts/{idCart}/products/{idProd}:
+  post:
+    summary: Agregar producto al carrito
+    description: Agrega un nuevo producto al carrito especificado.
+    parameters:
+      - in: path
+        name: idCart
+        description: ID del carrito al que se agregará el producto.
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: idProd
+        description: ID del producto que se agregará al carrito.
+        required: true
+        schema:
+          type: string
+    responses:
+      200:
+        description: Producto agregado al carrito exitosamente.
+      404:
+        description: No se pudo agregar el producto al carrito.
+      500:
+        description: Error interno del servidor al agregar el producto al carrito.
+  delete:
+    summary: Eliminar producto del carrito
+    description: Elimina un producto específico del carrito.
+    parameters:
+      - in: path
+        name: idCart
+        description: ID del carrito del que se eliminará el producto.
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: idProd
+        description: ID del producto que se eliminará del carrito.
+        required: true
+        schema:
+          type: string
+    responses:
+      200:
+        description: Producto eliminado del carrito exitosamente.
+      404:
+        description: No se pudo eliminar el producto del carrito.
+      500:
+        description: Error interno del servidor al eliminar el producto del carrito.
+/carts/clear/{idCart}:
+  delete:
+    summary: Vaciar carrito
+    description: Elimina todos los productos del carrito especificado.
+    parameters:
+      - in: path
+        name: idCart
+        description: ID del carrito que se vaciará.
+        required: true
+        schema:
+          type: string
+    responses:
+      200:
+        description: Carrito vaciado exitosamente.
+      404:
+        description: No se pudo vaciar el carrito.
+      500:
+        description: Error interno del servidor al vaciar el carrito.
+/products/:
+  get:
+    summary: Obtener todos los productos
+    description: Obtiene todos los productos almacenados en la base de datos.
+    responses:
+      200:
+        description: Lista de productos obtenida exitosamente.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Products/Product'
+      500:
+        description: Error interno del servidor al obtener los productos.
+  post:
+    summary: Crear un nuevo producto
+    description: Crea un nuevo producto con la información proporcionada en el cuerpo de la solicitud.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Products/Product'
+    responses:
+      200:
+        description: Producto creado exitosamente.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Products/Product'
+      400:
+        description: Datos de entrada no válidos o incompletos.
+      500:
+        description: Error interno del servidor al crear el producto.
+/products/{id}:
+  get:
+    summary: Obtener un producto por ID
+    description: Obtiene un producto específico mediante su ID.
+    parameters:
+      - in: path
+        name: id
+        description: ID del producto a obtener.
+        required: true
+        schema:
+          type: string
+    responses:
+      200:
+        description: Producto obtenido exitosamente.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Products/Product'
+      404:
+        description: Producto no encontrado.
+      500:
+        description: Error interno del servidor al obtener el producto.
+  delete:
+    summary: Eliminar un producto
+    description: Elimina un producto existente mediante su ID.
+    parameters:
+      - in: path
+        name: id
+        description: ID del producto a eliminar.
+        required: true
+        schema:
+          type: string
+    responses:
+      200:
+        description: Producto eliminado exitosamente.
+      404:
+        description: Producto no encontrado.
+      500:
+        description: Error interno del servidor al eliminar el producto.
+/users:
+  get:
+    summary: Obtener todos los usuarios
+    description: Obtiene todos los usuarios almacenados en la base de datos.
+    security:
+      - bearerAuth: []
+    parameters: []
+    requestBody: {}
+  delete:
+    summary: Eliminar usuarios inactivos
+    description: Elimina los usuarios que están marcados como inactivos en la base de datos.
+    security:
+      - bearerAuth: []
+    parameters: []
+    requestBody: {}
+/users/register:
+  post:
+    summary: Registro de usuario
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              first_name:
+                type: string
+              last_name:
+                type: string
+              email:
+                type: string
+              age:
+                type: number
+              password:
+                type: string
+              role:
+                type: string
+            required:
+              - email
+              - password
+    responses:
+      '200':
+        description: Usuario registrado correctamente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                _id:
+                  type: string
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                email:
+                  type: string
+                age:
+                  type: number
+                role:
+                  type: string
+      '403':
+        description: No se pudo registrar el usuario
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                error:
+                  type: string
+/users/login:
+  post:
+    summary: Inicio de sesión de usuario
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+            required:
+              - email
+              - password
+    responses:
+      '200':
+        description: Usuario autenticado correctamente
+        content:
+          application/json:
+            schema:
+              type: string
+              description: Token de autenticación JWT
+      '401':
+        description: Credenciales de inicio de sesión no válidas
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                error:
+                  type: string
+/users/profile:
+  get:
+    summary: Obtener perfil de usuario
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Perfil de usuario obtenido correctamente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                email:
+                  type: string
+                age:
+                  type: number
+                role:
+                  type: string
+      '401':
+        description: No autorizado, token de acceso no válido
+/users/reset-pass:
+  post:
+    summary: Restablecimiento de contraseña de usuario
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+            required:
+              - email
+    responses:
+      '200':
+        description: Solicitud de restablecimiento de contraseña generada correctamente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+      '404':
+        description: Usuario no encontrado para la solicitud de restablecimiento de contraseña
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+/users/new-password:
+  put:
+    summary: Actualización de contraseña de usuario
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              pass:
+                type: string
+            required:
+              - pass
+    responses:
+      '200':
+        description: Contraseña actualizada correctamente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                _id:
+                  type: string
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                email:
+                  type: string
+                age:
+                  type: number
+                role:
+                  type: string
+      '403':
+        description: Error al actualizar la contraseña
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                error:
+                  type: string
+/users/premium/{uid}:
+  post:
+    summary: Actualización a usuario premium
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: uid
+        in: path
+        description: ID del usuario
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Usuario actualizado a premium correctamente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                _id:
+                  type: string
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                email:
+                  type: string
+                age:
+                  type: number
+                role:
+                  type: string
+      '404':
+        description: Usuario no encontrado para actualizar a premium
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+/users/{uid}/documents:
+  post:
+    summary: Subir documentos de usuario
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: uid
+        in: path
+        description: ID del usuario
+        required: true
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              documents:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    reference:
+                      type: string
+            required:
+              - documents
+    responses:
+      '200':
+        description: Documentos subidos con éxito para el usuario
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                _id:
+                  type: string
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                email:
+                  type: string
+                age:
+                  type: number
+                role:
+                  type: string
+                documents:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      reference:
+                        type: string
+      '404':
+        description: Usuario no encontrado para subir documentos
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+/tickets/cart/{cartId}:
+  post:
+    summary: Genera un nuevo ticket a partir de un carrito de compras.
+    parameters:
+      - in: path
+        name: cartId
+        description: ID del carrito de compras del cual se generará el ticket.
+        required: true
+        schema:
+          type: string
+    requestBody:
+      description: Datos requeridos para generar el ticket.
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+    security:
+      - BearerAuth: []

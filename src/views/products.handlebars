@@ -1,0 +1,15 @@
+<h2>MIRA TODOS LOS PRODUCTOS DISPONIBLES {{first_name}}</h2>
+
+{{#if products.length}}
+    {{#each products}}
+        <ul>
+            {{#with this}}
+                <li>Producto: {{name}}</li>
+                <li>Descripción: {{description}}</li>
+                <li>Price: {{price}}</li>
+            {{/with}}
+        </ul>
+    {{/each}}
+{{else}}
+    <p>No hay usuarios</p>
+{{/if}}

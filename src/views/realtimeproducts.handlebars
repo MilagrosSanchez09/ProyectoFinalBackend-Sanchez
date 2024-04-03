@@ -1,0 +1,17 @@
+
+<form id="form">
+    <label for="name" id="name">Nombre del producto: <input id="name" name="name" type="text" required placeholder="Nombre del producto"/></label>
+    <label for="description" id="description">Descripción: <input id="description" name="description" required type="text" placeholder="Ingresa la descripción"/></label>
+    <label for="code" id="code">Código: <input id="code" name="code" type="text" placeholder="Código" required/></label>
+    <label for="price" id="price">Precio: <input id="price" name="price" type="number" placeholder="Precio del producto" required/></label>
+    <label for="stock" id="stock">Stock: <input id="stock" name="stock" type="number" placeholder="stock" required/></label>
+    <label for="category" id="category">Categoría: <input id="category" name="category" type="text" placeholder="Categoría" required/></label>
+    <input type="submit" value="SEND" />
+</form>
+
+    <p id="products"></p>
+
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/index.js"></script>
